@@ -1,0 +1,47 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #222;
+  padding: 16px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+h1 {
+  color: #fce300;
+  font-size: 12px;
+  font-weight: 600;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+
+  img {
+    width: 16px;
+    height: auto;
+  }
+}
+
+canvas {
+  background: #fff;
+}
+
+header {
+  background: silver;
+  padding: 2px;
+
+  button {
+    border: 0;
+    background: transparent;
+
+    &:hover {
+      box-shadow: 1px 1px black, inset -1px -1px gray, inset 1px 1px white;
+    }
+  }
+}
