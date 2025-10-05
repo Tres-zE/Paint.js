@@ -40,8 +40,22 @@ header {
     border: 0;
     background: transparent;
 
+    /* botones estilo 3d windows */
     &:hover {
       box-shadow: 1px 1px black, inset -1px -1px gray, inset 1px 1px white;
     }
   }
+}
+
+main {
+  padding: 16px;
+}
+
+footer {
+  background: silver;
+  padding: 4px;
+}
+
+#container {
+  border: 1px solid #808080;
 }
