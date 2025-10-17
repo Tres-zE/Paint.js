@@ -11,8 +11,9 @@ const $ = (el) => document.querySelector(el);
 const $$ = (els) => document.querySelectorAll(els);
 
 //elements
-const $canvas = "#canvas"; //DOM element for canvas
+const $canvas = $("#canvas"); //DOM element for canvas
 const ctx = $canvas.getContext("2d"); //canvas context
+const $colorPicker = $("#colorPicker"); //DOM element for color picker
 
 //state
 let isDrawing = false; //flag to track drawing state
@@ -27,6 +28,7 @@ $canvas.addEventListener("mousemove", draw);
 $canvas.addEventListener("mouseup", stopDrawing);
 $canvas.addEventListener("mouseleave", stopDrawing);
 
+$colorPicker.addEventListener("change", handleChangeColor);
 //methods
 function startDrawing(e) {
   isDrawing = true;
@@ -38,6 +40,33 @@ function startDrawing(e) {
   [lastX, lastY] = [offsetX, offsetY];
 }
 
-function draw(e) {}
+function draw(e) {
+  if (!isDrawing) return;
 
-function stopDrawing(e) {}
+  const { offsetX, offsetY } = e;
+
+  //comenzar el dibujo
+  ctx.beginPath();
+
+  //mover  el trazado a la posicion inicial
+  ctx.moveTo(lastX, lastY);
+
+  //dibujar una linea entre coordenadas actuales y ultimas
+  ctx.lineTo(offsetX, offsetY);
+  ctx.stroke();
+
+  ctx.lineWidth = 2;
+
+  //actualizar ultimas coordenadas
+  [lastX, lastY] = [offsetX, offsetY];
+}
+
+function stopDrawing(e) {
+  isDrawing = false;
+}
+
+function handleChangeColor() {
+  const { value } = $colorPicker;
+  ctx.strokeStyle = value;
+  ctx.fillStyle = value;
+}
