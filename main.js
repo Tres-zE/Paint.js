@@ -14,6 +14,7 @@ const $$ = (els) => document.querySelectorAll(els);
 const $canvas = $("#canvas"); //DOM element for canvas
 const ctx = $canvas.getContext("2d"); //canvas context
 const $colorPicker = $("#colorPicker"); //DOM element for color picker
+const $clearBtn = $("#clear-btn"); //DOM element for clear button
 
 //state
 let isDrawing = false; //flag to track drawing state
@@ -29,6 +30,7 @@ $canvas.addEventListener("mouseup", stopDrawing);
 $canvas.addEventListener("mouseleave", stopDrawing);
 
 $colorPicker.addEventListener("change", handleChangeColor);
+$clearBtn.addEventListener("click", clearCanvas);
 //methods
 function startDrawing(e) {
   isDrawing = true;
@@ -69,4 +71,8 @@ function handleChangeColor() {
   const { value } = $colorPicker;
   ctx.strokeStyle = value;
   ctx.fillStyle = value;
+}
+
+function clearCanvas() {
+  ctx.clearRect(0, 0, $canvas.width, $canvas.height);
 }
