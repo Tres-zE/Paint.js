@@ -15,6 +15,8 @@ const $canvas = $("#canvas"); //DOM element for canvas
 const ctx = $canvas.getContext("2d"); //canvas context
 const $colorPicker = $("#colorPicker"); //DOM element for color picker
 const $clearBtn = $("#clear-btn"); //DOM element for clear button
+const $drawBtn = $("#draw-btn"); //DOM element for draw button
+const $rectangleBtn = $("#rectangle-btn"); //DOM element for rectangle button
 
 //state
 let isDrawing = false; //flag to track drawing state
@@ -30,7 +32,13 @@ $canvas.addEventListener("mouseup", stopDrawing);
 $canvas.addEventListener("mouseleave", stopDrawing);
 
 $colorPicker.addEventListener("change", handleChangeColor);
+
 $clearBtn.addEventListener("click", clearCanvas);
+
+$drawBtn.addEventListener("click", () => setMode(MODES.DRAW));
+
+$rectangleBtn.addEventListener("click", () => setMode(MODES.RECTANGLE));
+
 //methods
 function startDrawing(e) {
   isDrawing = true;
@@ -75,4 +83,20 @@ function handleChangeColor() {
 
 function clearCanvas() {
   ctx.clearRect(0, 0, $canvas.width, $canvas.height);
+}
+
+function setMode(newMode) {
+  mode = newMode;
+  //esto es para limpiar el boton actual activo y poner el nuevo activo
+  $("button.active")?.classList.remove("active");
+
+  if (newMode === MODES.DRAW) {
+    $drawBtn.classList.add("active");
+    return;
+  }
+
+  if (newMode === MODES.RECTANGLE) {
+    $rectangleBtn.classList.add("active");
+    return;
+  }
 }
