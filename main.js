@@ -24,6 +24,7 @@ let startX, startY;
 let lastX = 0; //last x position
 let lastY = 0; //last y position
 let mode = MODES.DRAW; //current mode
+let imageData; //to store canvas image data
 
 //event listeners
 $canvas.addEventListener("mousedown", startDrawing);
@@ -48,6 +49,8 @@ function startDrawing(e) {
   //guardar coordenadas iniciales 'Destructuracion'
   [startX, startY] = [offsetX, offsetY];
   [lastX, lastY] = [offsetX, offsetY];
+
+  imageData = ctx.getImageData(0, 0, $canvas.width, $canvas.height);
 }
 
 function draw(e) {
@@ -55,20 +58,37 @@ function draw(e) {
 
   const { offsetX, offsetY } = e;
 
-  //comenzar el dibujo
-  ctx.beginPath();
+  if (mode === MODES.DRAW) {
+    //comenzar el dibujo
+    ctx.beginPath();
 
-  //mover  el trazado a la posicion inicial
-  ctx.moveTo(lastX, lastY);
+    //mover  el trazado a la posicion inicial
+    ctx.moveTo(lastX, lastY);
 
-  //dibujar una linea entre coordenadas actuales y ultimas
-  ctx.lineTo(offsetX, offsetY);
-  ctx.stroke();
+    //dibujar una linea entre coordenadas actuales y ultimas
+    ctx.lineTo(offsetX, offsetY);
+    ctx.stroke();
 
-  ctx.lineWidth = 2;
+    ctx.lineWidth = 2;
 
-  //actualizar ultimas coordenadas
-  [lastX, lastY] = [offsetX, offsetY];
+    //actualizar ultimas coordenadas
+    [lastX, lastY] = [offsetX, offsetY];
+
+    return;
+  }
+  if (mode === MODES.RECTANGLE) {
+    ctx.putImageData(imageData, 0, 0); //restaurar la imagen guardada
+    //calcular ancho y alto del rectangulo
+    const width = offsetX - startX;
+    const height = offsetY - startY;
+
+    //dibujando el rectangulo
+    ctx.beginPath();
+    ctx.rect(startX, startY, width, height);
+    ctx.stroke();
+
+    return;
+  }
 }
 
 function stopDrawing(e) {
@@ -92,11 +112,15 @@ function setMode(newMode) {
 
   if (newMode === MODES.DRAW) {
     $drawBtn.classList.add("active");
+    canvas.style.cursor = "crosshair";
+    ctx.lineWidth = 2;
     return;
   }
 
   if (newMode === MODES.RECTANGLE) {
     $rectangleBtn.classList.add("active");
+    canvas.style.cursor = "ns-resize";
+    ctx.lineWidth = 2;
     return;
   }
 }
