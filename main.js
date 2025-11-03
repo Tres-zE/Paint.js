@@ -1,22 +1,23 @@
 //constants
 const MODES = {
-  DRAW: "draw",
-  ERASE: "erase",
-  RECTANGLE: "rectangle",
-  ELLIPSE: "ellipse",
-  PICKER: "picker",
+  DRAW: 'draw',
+  ERASE: 'erase',
+  RECTANGLE: 'rectangle',
+  ELLIPSE: 'ellipse',
+  PICKER: 'picker',
 };
 //utilities
 const $ = (el) => document.querySelector(el);
 const $$ = (els) => document.querySelectorAll(els);
 
 //elements
-const $canvas = $("#canvas"); //DOM element for canvas
-const ctx = $canvas.getContext("2d"); //canvas context
-const $colorPicker = $("#colorPicker"); //DOM element for color picker
-const $clearBtn = $("#clear-btn"); //DOM element for clear button
-const $drawBtn = $("#draw-btn"); //DOM element for draw button
-const $rectangleBtn = $("#rectangle-btn"); //DOM element for rectangle button
+const $canvas = $('#canvas'); //DOM element for canvas
+const ctx = $canvas.getContext('2d'); //canvas context
+const $colorPicker = $('#colorPicker'); //DOM element for color picker
+const $clearBtn = $('#clear-btn'); //DOM element for clear button
+const $drawBtn = $('#draw-btn'); //DOM element for draw button
+const $rectangleBtn = $('#rectangle-btn'); //DOM element for rectangle button
+const $ereaseBtn = $('#erase-btn'); //DOM element for erase button
 
 //state
 let isDrawing = false; //flag to track drawing state
@@ -27,18 +28,22 @@ let mode = MODES.DRAW; //current mode
 let imageData; //to store canvas image data
 
 //event listeners
-$canvas.addEventListener("mousedown", startDrawing);
-$canvas.addEventListener("mousemove", draw);
-$canvas.addEventListener("mouseup", stopDrawing);
-$canvas.addEventListener("mouseleave", stopDrawing);
+$canvas.addEventListener('mousedown', startDrawing);
+$canvas.addEventListener('mousemove', draw);
+$canvas.addEventListener('mouseup', stopDrawing);
+$canvas.addEventListener('mouseleave', stopDrawing);
 
-$colorPicker.addEventListener("change", handleChangeColor);
+$colorPicker.addEventListener('change', handleChangeColor);
 
-$clearBtn.addEventListener("click", clearCanvas);
+$clearBtn.addEventListener('click', clearCanvas);
 
-$drawBtn.addEventListener("click", () => setMode(MODES.DRAW));
+$ereaseBtn.addEventListener('click', () => {
+  setMode(MODES.ERASE);
+});
 
-$rectangleBtn.addEventListener("click", () => setMode(MODES.RECTANGLE));
+$drawBtn.addEventListener('click', () => setMode(MODES.DRAW));
+
+$rectangleBtn.addEventListener('click', () => setMode(MODES.RECTANGLE));
 
 //methods
 function startDrawing(e) {
@@ -58,7 +63,7 @@ function draw(e) {
 
   const { offsetX, offsetY } = e;
 
-  if (mode === MODES.DRAW) {
+  if (mode === MODES.DRAW || mode === MODES.ERASE) {
     //comenzar el dibujo
     ctx.beginPath();
 
@@ -108,19 +113,27 @@ function clearCanvas() {
 function setMode(newMode) {
   mode = newMode;
   //esto es para limpiar el boton actual activo y poner el nuevo activo
-  $("button.active")?.classList.remove("active");
+  $('button.active')?.classList.remove('active');
 
   if (newMode === MODES.DRAW) {
-    $drawBtn.classList.add("active");
-    canvas.style.cursor = "crosshair";
+    $drawBtn.classList.add('active');
+    canvas.style.cursor = 'crosshair';
     ctx.lineWidth = 2;
     return;
   }
 
   if (newMode === MODES.RECTANGLE) {
-    $rectangleBtn.classList.add("active");
-    canvas.style.cursor = "ns-resize";
+    $rectangleBtn.classList.add('active');
+    canvas.style.cursor = 'ns-resize';
     ctx.lineWidth = 2;
+    return;
+  }
+
+  if (newMode === MODES.ERASE) {
+    $ereaseBtn.classList.add('active');
+    canvas.style.cursor = "url('./cursors/erase.png') 0 24, auto";
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.lineWidth = 24;
     return;
   }
 }
