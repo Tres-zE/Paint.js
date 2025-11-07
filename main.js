@@ -18,6 +18,7 @@ const $clearBtn = $('#clear-btn'); //DOM element for clear button
 const $drawBtn = $('#draw-btn'); //DOM element for draw button
 const $rectangleBtn = $('#rectangle-btn'); //DOM element for rectangle button
 const $ereaseBtn = $('#erase-btn'); //DOM element for erase button
+const $pickerBtn = $('#picker-btn'); //DOM element for color picker button
 
 //state
 let isDrawing = false; //flag to track drawing state
@@ -32,6 +33,8 @@ $canvas.addEventListener('mousedown', startDrawing);
 $canvas.addEventListener('mousemove', draw);
 $canvas.addEventListener('mouseup', stopDrawing);
 $canvas.addEventListener('mouseleave', stopDrawing);
+
+$pickerBtn.addEventListener('click', () => setMode(MODES.PICKER));
 
 $colorPicker.addEventListener('change', handleChangeColor);
 
@@ -118,6 +121,7 @@ function setMode(newMode) {
   if (newMode === MODES.DRAW) {
     $drawBtn.classList.add('active');
     canvas.style.cursor = 'crosshair';
+    ctx.globalCompositeOperation = 'source-over';
     ctx.lineWidth = 2;
     return;
   }
@@ -125,6 +129,7 @@ function setMode(newMode) {
   if (newMode === MODES.RECTANGLE) {
     $rectangleBtn.classList.add('active');
     canvas.style.cursor = 'ns-resize';
+    ctx.globalCompositeOperation = 'source-over';
     ctx.lineWidth = 2;
     return;
   }
@@ -136,4 +141,14 @@ function setMode(newMode) {
     ctx.lineWidth = 24;
     return;
   }
+
+  if (newMode === MODES.PICKER) {
+    $pickerBtn.classList.add('active');
+    return;
+  }
+}
+
+// show picker if browser supports it
+if (typeof window.EyeDropper !== 'undefined') {
+  $pickerBtn.removeAttribute('disabled'); // disable button by default
 }

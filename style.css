@@ -99,6 +99,11 @@ aside {
       border-right-color: #eee;
       border-bottom-color: #eee;
     }
+
+    &[disabled] {
+      pointer-events: none;
+      opacity: 0.4;
+    }
   }
 }
 
