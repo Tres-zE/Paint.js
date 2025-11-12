@@ -27,6 +27,7 @@ let lastX = 0; //last x position
 let lastY = 0; //last y position
 let mode = MODES.DRAW; //current mode
 let imageData; //to store canvas image data
+let isShiftPressed = false; //flag to track shift key state
 
 //event listeners
 $canvas.addEventListener('mousedown', startDrawing);
@@ -39,6 +40,9 @@ $pickerBtn.addEventListener('click', () => setMode(MODES.PICKER));
 $colorPicker.addEventListener('change', handleChangeColor);
 
 $clearBtn.addEventListener('click', clearCanvas);
+
+document.addEventListener('keydown', handleKeyDown);
+document.addEventListener('keyup', handleKeyUp);
 
 $ereaseBtn.addEventListener('click', () => {
   setMode(MODES.ERASE);
@@ -87,8 +91,15 @@ function draw(e) {
   if (mode === MODES.RECTANGLE) {
     ctx.putImageData(imageData, 0, 0); //restaurar la imagen guardada
     //calcular ancho y alto del rectangulo
-    const width = offsetX - startX;
-    const height = offsetY - startY;
+    let width = offsetX - startX;
+    let height = offsetY - startY;
+
+    //si shift esta presionado, hacer un cuadrado
+    if (isShiftPressed) {
+      const sideLength = Math.min(Math.abs(width), Math.abs(height));
+      width = width > 0 ? sideLength : -sideLength;
+      height = height > 0 ? sideLength : -sideLength;
+    }
 
     //dibujando el rectangulo
     ctx.beginPath();
@@ -158,6 +169,14 @@ async function setMode(newMode) {
     }
     return;
   }
+}
+
+function handleKeyDown({ key }) {
+  (isShiftPressed === key) === 'shift';
+}
+
+function handleKeyUp({ key }) {
+  if (key === 'shift') isShiftPressed = false;
 }
 
 // show picker if browser supports it
