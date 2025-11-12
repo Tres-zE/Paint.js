@@ -113,7 +113,8 @@ function clearCanvas() {
   ctx.clearRect(0, 0, $canvas.width, $canvas.height);
 }
 
-function setMode(newMode) {
+async function setMode(newMode) {
+  let previousMode = mode;
   mode = newMode;
   //esto es para limpiar el boton actual activo y poner el nuevo activo
   $('button.active')?.classList.remove('active');
@@ -144,6 +145,17 @@ function setMode(newMode) {
 
   if (newMode === MODES.PICKER) {
     $pickerBtn.classList.add('active');
+    const eyeDropper = new window.EyeDropper();
+
+    try {
+      const result = await eyeDropper.open();
+      const { sRGBHex } = result;
+      ctx.strokeStyle = sRGBHex;
+      $colorPicker.value = sRGBHex; //actualizar el color del input
+      setMode(previousMode); //volver al modo dibujo despues de seleccionar color
+    } catch (e) {
+      //si ha habido un error o el usuario ha cancelado la seleccion
+    }
     return;
   }
 }
